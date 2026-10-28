@@ -2,11 +2,11 @@
 
 ### Hide Secret Data Inside BMP Images Using Least Significant Bit (LSB) Encoding
 
-**Image Steganography in C** is a command-line application that hides a secret file inside a BMP image and retrieves it later without directly displaying the hidden information in the image.
+Image Steganography is a command-line application developed using the C programming language to hide secret file data inside BMP images and retrieve it when required.
 
-The project implements **Least Significant Bit (LSB) steganography**, a technique that stores secret information in the least significant bits of image bytes. It supports both encoding and decoding operations, allowing users to embed a secret file into an image and recover it from the resulting stego image.
+The project implements **Least Significant Bit (LSB) steganography**, a technique that embeds secret information into the least significant bits of image bytes. It supports encoding and decoding operations, allowing users to hide a secret file inside a BMP image and recover it later.
 
-Developed using the C programming language, this project demonstrates practical applications of binary file handling, bitwise operations, pointers, structures, command-line arguments, modular programming, and error handling.
+This project demonstrates practical applications of C programming, binary file handling, bitwise operations, pointers, structures, command-line arguments, file management, and modular programming.
 
 ---
 
@@ -29,6 +29,7 @@ Developed using the C programming language, this project demonstrates practical 
 - [Function Documentation](#-function-documentation)
 - [Error Handling](#-error-handling)
 - [Testing Scenarios](#-testing-scenarios)
+- [Sample Files and Demonstration](#-sample-files-and-demonstration)
 - [Limitations](#-limitations)
 - [Learning Outcomes](#-learning-outcomes)
 - [Future Enhancements](#-future-enhancements)
@@ -39,65 +40,58 @@ Developed using the C programming language, this project demonstrates practical 
 
 ## 🚀 About the Project
 
-Digital images contain large amounts of pixel data. This project uses that data to store secret file information within a BMP image.
+Digital images contain pixel data that can be used to store additional information. This project uses the data in a BMP image to conceal a secret file.
 
-The application takes three main inputs during encoding:
+During encoding, the application reads the original BMP image and the secret file. It embeds a magic string, the secret file extension, the secret file size, and the secret file contents into selected image bytes.
 
-1. A source BMP image.
-2. A secret file containing the information to hide.
-3. An optional output filename for the resulting stego image.
+During decoding, the application reads the stego image, verifies the magic string, extracts the stored metadata, and reconstructs the secret file.
 
-During encoding, the program copies the BMP header and embeds the secret information into the least significant bits of image bytes. It stores a predefined magic string, the secret file extension, the extension length, the secret file size, and the secret file contents.
-
-During decoding, the application reads the stego image, verifies the magic string, extracts the stored file information, and reconstructs the secret file.
-
-The implementation is divided into separate source and header files to keep encoding, decoding, shared data types, and the main program organized.
+The application uses separate source and header files to organize the main program, encoding logic, decoding logic, and shared definitions.
 
 ### Project Information
 
-| Item | Details |
+| Property | Details |
 |---|---|
 | Project Name | Image Steganography in C |
 | Programming Language | C |
 | Application Type | Command-line application |
-| Input Image Format | BMP |
+| Image Format | BMP |
 | Technique | Least Significant Bit (LSB) manipulation |
-| Main Operations | Encoding and Decoding |
+| Main Operations | Encoding and decoding |
 | Magic String | `#*` |
-| Output | Stego image and recovered secret file |
+| Sample Output | Stego image and recovered secret file |
 
 ## 🎯 Objectives
 
-- Understand how image steganography works.
-- Implement LSB-based data hiding in BMP images.
-- Encode secret file information into image bytes.
-- Decode and recover the original secret file.
-- Implement bitwise operations for individual bits.
-- Perform binary file operations using standard C library functions.
-- Use a magic string to identify an encoded image.
-- Validate command-line arguments and file extensions.
-- Organize the project using modular programming.
-- Apply structures, pointers, arrays, and functions in a practical application.
+- Understand the fundamentals of image steganography.
+- Hide secret file data inside BMP images.
+- Retrieve hidden information through decoding.
+- Implement LSB manipulation using bitwise operations.
+- Process image and secret files in binary mode.
+- Use a magic string to identify the expected hidden-data format.
+- Calculate image capacity before encoding.
+- Preserve the secret file extension and size.
+- Apply pointers, arrays, structures, and functions.
+- Develop a modular application using multiple C source and header files.
+- Practice command-line argument processing and error handling.
 
 ## 🧠 What Is Image Steganography?
 
-Image steganography is a technique used to conceal information inside an image so that the presence of the information is less apparent.
+Image steganography is a technique for concealing information within another file, such as an image.
 
-Unlike encryption, which transforms information into an unreadable form, steganography focuses on concealing the existence of the information within another file.
+Unlike encryption, which transforms information into a different representation, steganography attempts to conceal the presence of the information itself.
 
-In this project, a secret file is embedded inside a BMP image. The program modifies selected least significant bits of image bytes to represent the secret information.
+In this project, a secret file is embedded into a BMP image by modifying selected least significant bits of image bytes.
 
-The output image is called a **stego image**.
+The important terms are:
 
-### Important Terms
-
-- **Cover Image:** The original BMP image used to store secret data.
+- **Cover Image:** The original BMP image used to carry the secret data.
 - **Secret File:** The file that needs to be hidden.
-- **Stego Image:** The BMP image containing the embedded secret information.
+- **Stego Image:** The output image containing the embedded data.
 - **Encoding:** The process of embedding the secret file into the image.
 - **Decoding:** The process of extracting the hidden file.
 - **LSB:** The least significant bit of a byte.
-- **Magic String:** A predefined identifier used to determine whether the expected hidden-data format is present.
+- **Magic String:** A predefined identifier used to recognize the expected encoded data format.
 
 ## ⚙️ How LSB Steganography Works
 
@@ -106,110 +100,100 @@ A byte contains eight bits. The least significant bit is the rightmost bit.
 For example:
 
 ```text
-Original byte:  10110100
-Secret bit:             1
-Modified byte:  10110101
+Original byte : 10110100
+Secret bit    :        1
+Modified byte : 10110101
 ```
 
 Only the least significant bit changes in this example.
 
-The program processes each secret data byte one bit at a time. Each bit is stored in the least significant bit of one image byte.
+The encoder processes each secret byte one bit at a time. Each bit is stored in the least significant bit of one image byte.
 
-Therefore, **one secret byte requires eight image bytes**.
+Therefore, **one secret byte requires eight image bytes** for the payload encoding.
 
 ### Example: Encoding the Character `A`
 
-The ASCII representation of `A` is:
-
 ```text
-Character: A
-ASCII:     65
-Binary:    01000001
+Character : A
+ASCII     : 65
+Binary    : 01000001
 ```
 
-The eight bits are embedded into the least significant bits of eight image bytes.
+The eight binary bits are embedded into the least significant bits of eight image bytes.
 
-```text
-Secret bits:
-0 1 0 0 0 0 0 1
+During decoding, the program reads those bits and reconstructs the original byte.
 
-Image byte LSBs:
-0 1 0 0 0 0 0 1
-```
+The process continues until the stored secret file size has been recovered.
 
-During decoding, the program extracts these bits and reconstructs the original byte.
+### Advantages of LSB Encoding
 
-This process is repeated for the secret file data.
+- Simple to understand and implement.
+- Demonstrates practical bitwise manipulation.
+- Supports embedding binary file data.
+- Provides hands-on experience with image processing and file handling.
 
-### Why Use LSB?
-
-- It is relatively simple to implement.
-- It demonstrates practical bitwise manipulation.
-- It allows data to be embedded directly into image bytes.
-- It provides a useful learning example for binary file processing.
-
-The project is an educational implementation of steganography. LSB hiding is not encryption and does not, by itself, provide strong confidentiality or protection against detection.
+**Security note:** LSB steganography is not encryption. The hidden data may be detectable, and modifying or recompressing the image may damage the embedded information.
 
 ## ✨ Project Features
 
-### 🔹 1. Encode Secret Data
+### 1. Encode Secret Data
 
-Hide a secret file inside a BMP image using LSB manipulation.
+Hides a secret file inside a BMP image using LSB manipulation.
 
-### 🔹 2. Decode Hidden Data
+### 2. Decode Hidden Data
 
-Extract the embedded secret file from a previously encoded BMP image.
+Extracts the hidden file from an image previously generated by the encoder.
 
-### 🔹 3. Magic String Verification
+### 3. Magic String Verification
 
-The program uses the magic string `#*` to identify the expected encoded data format before extracting the remaining information.
+Uses the predefined magic string `#*` to identify the expected hidden-data format before continuing with extraction.
 
-### 🔹 4. File Extension Preservation
+### 4. Secret File Extension Preservation
 
-The program embeds the secret file extension so that decoding can recover the extension and use it when saving the output file.
+Stores the secret file extension so that the decoder can recover it and use it when generating the output file.
 
-### 🔹 5. Secret File Size Storage
+### 5. Secret File Size Storage
 
-The original secret file size is embedded in the image, allowing the decoder to determine how many bytes to recover.
+Stores the original secret file size, allowing the decoder to determine how many bytes to extract.
 
-### 🔹 6. Image Capacity Checking
+### 6. Image Capacity Checking
 
-The encoding process calculates the image capacity and compares it with the amount of data that needs to be embedded.
+Calculates the image capacity and checks whether the image can hold the metadata and secret file data.
 
-### 🔹 7. BMP Header Preservation
+### 7. BMP Header Preservation
 
-The program copies the first 54 bytes of the source BMP file into the output image before encoding the hidden information.
+Copies the first 54 bytes of the source BMP image before embedding the hidden data.
 
-### 🔹 8. Optional Output Filename
+### 8. Optional Output Filename
 
-The encoding command accepts an optional output image filename. If it is omitted, the program uses `stego_image.bmp`.
+Allows the user to provide a custom filename for the output stego image.
 
-### 🔹 9. Modular Design
+### 9. Modular Programming
 
-The implementation separates the main program, encoding logic, decoding logic, shared structures, and function declarations.
+Separates the main program, encoding functions, decoding functions, and shared declarations into multiple files.
 
-### 🔹 10. Command-Line Interface
+### 10. Command-Line Interface
 
-The user selects the required operation through command-line arguments instead of an interactive graphical interface.
+Allows the user to choose encoding or decoding using command-line arguments.
 
 ## 🔐 Encoding Process
 
-The encoding operation follows these steps:
+The encoding process follows these steps:
 
 1. Read the command-line arguments.
-2. Identify the encoding operation using `-e`.
+2. Identify the encoding option `-e`.
 3. Validate the source BMP filename and secret file extension.
 4. Select the output stego image filename.
-5. Open the source image, secret file, and destination image.
+5. Open the required files in binary mode.
 6. Calculate the source image capacity.
-7. Calculate the secret file size.
-8. Verify that the image has sufficient capacity.
+7. Determine the secret file size.
+8. Check whether the image has enough capacity.
 9. Copy the 54-byte BMP header.
 10. Encode the magic string `#*`.
 11. Encode the secret file extension length.
 12. Encode the secret file extension.
 13. Encode the secret file size.
-14. Encode the secret file data byte by byte.
+14. Encode the secret file contents.
 15. Copy the remaining image data.
 16. Close the files and report the operation status.
 
@@ -221,48 +205,47 @@ flowchart TD
     B --> C{Encoding requested?}
     C -- No --> X[Check decoding or invalid operation]
     C -- Yes --> D[Validate filenames and extensions]
-    D --> E[Open source image and secret file]
-    E --> F[Calculate image capacity and secret size]
+    D --> E[Open image and secret files]
+    E --> F[Calculate image capacity]
     F --> G{Enough capacity?}
-    G -- No --> H[Report encoding failure]
+    G -- No --> H[Report failure]
     G -- Yes --> I[Copy BMP header]
     I --> J[Encode magic string]
     J --> K[Encode extension and file size]
-    K --> L[Encode secret file data]
-    L --> M[Copy remaining image bytes]
+    K --> L[Encode secret data]
+    L --> M[Copy remaining image data]
     M --> N[Close files]
     N --> O([Encoding complete])
 ```
 
 ## 🔓 Decoding Process
 
-The decoding operation follows these steps:
+The decoding process follows these steps:
 
 1. Read the command-line arguments.
-2. Identify the decoding operation using `-d`.
-3. Validate the stego image filename and optional output filename.
+2. Identify the decoding option `-d`.
+3. Validate the stego image filename and output filename.
 4. Open the stego image.
-5. Read the hidden magic string.
-6. Verify the magic string.
-7. Decode the secret file extension length.
-8. Decode the secret file extension.
-9. Decode the original secret file size.
-10. Extract the secret file data.
-11. Write the recovered bytes into the output file.
-12. Close the files and report the operation status.
+5. Extract and verify the magic string.
+6. Decode the secret file extension length.
+7. Recover the secret file extension.
+8. Decode the original secret file size.
+9. Extract the secret file contents.
+10. Write the recovered bytes to the output file.
+11. Close the files and report the operation status.
 
 ### Decoding Flowchart
 
 ```mermaid
 flowchart TD
     A([Start]) --> B[Read command-line arguments]
-    B --> C[Validate stego image and output filename]
+    B --> C[Validate arguments]
     C --> D[Open stego image]
     D --> E[Decode magic string]
     E --> F{Magic string matches?}
     F -- No --> G[Report decoding failure]
     F -- Yes --> H[Decode extension length]
-    H --> I[Decode file extension]
+    H --> I[Decode extension]
     I --> J[Decode secret file size]
     J --> K[Extract secret file data]
     K --> L[Write recovered file]
@@ -272,17 +255,17 @@ flowchart TD
 
 ## 🧩 Hidden Data Structure
 
-The encoding process stores the following information in the image data:
+The encoder stores the following information in the image data.
 
-| Order | Information | Storage |
+| Order | Information | Storage Requirement |
 |---|---|---|
-| 1 | Magic string `#*` | 2 characters, 16 image bytes |
-| 2 | Secret file extension length | 32 bits, 32 image bytes |
+| 1 | Magic string `#*` | 16 image bytes |
+| 2 | Secret file extension length | 32 image bytes |
 | 3 | Secret file extension | 8 image bytes per character |
-| 4 | Secret file size | 32 bits, 32 image bytes |
+| 4 | Secret file size | 32 image bytes |
 | 5 | Secret file contents | 8 image bytes per secret byte |
 
-For the implementation's expected extension length, the required number of image bytes can be calculated as:
+The total storage required for the embedded information is:
 
 ```text
 Total image bytes required =
@@ -293,12 +276,14 @@ Total image bytes required =
   + (secret file size × 8)
 ```
 
-This calculation represents the data embedded after the BMP header. The encoding function checks the available capacity before proceeding.
+This formula represents the image bytes required for the embedded payload, excluding the copied BMP header and any remaining image data.
+
+The exact format depends on the matching encoding and decoding implementation.
 
 ## 📂 Project Structure
 
+```text
 Image-Steganography-in-C/
-│
 ├── main.c
 ├── encode.c
 ├── encode.h
@@ -308,28 +293,31 @@ Image-Steganography-in-C/
 ├── types.h
 ├── README.md
 ├── .gitignore
-│
-├── samples/
-│   ├── beautiful.bmp
-│   ├── stego_image.bmp
-│   └── recovered_secret.txt
-│
-└── docs/
-    └── sample-output.txt
+├── beautiful.bmp
+├── stego_image.bmp
+├── recovered_secret.txt
+└── sample-output.txt
+```
 
-### File Descriptions
+The tree above assumes the sample files are in the repository's root directory. If you placed them inside a folder such as `samples/`, update the tree to match your actual repository.
 
-| File | Responsibility |
+## 📄 File Descriptions
+
+| File | Description |
 |---|---|
-| `main.c` | Entry point, operation selection, argument processing, and calling encoding or decoding |
-| `encode.c` | Encoding functions, capacity checking, BMP header copying, and LSB data embedding |
-| `encode.h` | `EncodeInfo` structure and encoding function declarations |
-| `decode.c` | Decoding functions, magic string verification, and secret file extraction |
-| `decode.h` | `DecodeInfo` structure and decoding function declarations |
-| `common.h` | Shared definitions, including the magic string, where defined by the project |
-| `types.h` | `Status` and `OperationType` enumerations and the `uint` type |
+| `main.c` | Entry point; processes command-line arguments and selects encoding or decoding |
+| `encode.c` | Implements encoding and LSB manipulation |
+| `encode.h` | Contains encoding-related structures and function declarations |
+| `decode.c` | Implements magic string verification and secret data extraction |
+| `decode.h` | Contains decoding-related structures and function declarations |
+| `common.h` | Contains shared definitions, including the magic string where declared |
+| `types.h` | Defines operation types, status values, and common data types |
+| `beautiful.bmp` | Original BMP cover image |
+| `stego_image.bmp` | Image containing the embedded secret data |
+| `recovered_secret.txt` | Recovered secret file generated during decoding |
+| `sample-output.txt` | Optional file containing sample terminal output |
+| `.gitignore` | Excludes configured generated files and local files from Git tracking |
 | `README.md` | Project documentation |
-| `.gitignore` | Rules for excluding configured generated and local files |
 
 ## 🛠️ Technologies and Concepts
 
@@ -337,52 +325,49 @@ Image-Steganography-in-C/
 
 **C Programming**
 
-The project uses C to process binary files, manipulate bits, manage memory buffers, and organize operations into functions.
-
 ### Concepts Applied
 
 | Concept | Application |
 |---|---|
-| Structures | `EncodeInfo` and `DecodeInfo` store operation and file information |
-| Enumerations | `Status` and `OperationType` represent operation states |
-| Pointers | File pointers, buffers, and structures are passed to functions |
-| Arrays | Store BMP headers, byte buffers, and file extensions |
-| String Handling | Validate extensions, compare arguments, and process filenames |
-| Command-Line Arguments | Select encoding or decoding and provide filenames |
-| Binary File Handling | Read and write image and secret file bytes |
+| Structures | Store encoding and decoding information |
+| Enumerations | Represent operation types and status values |
+| Pointers | Pass file handles, buffers, and structures |
+| Arrays | Store image bytes and metadata |
+| String Handling | Process filenames and file extensions |
+| Command-Line Arguments | Select operations and provide filenames |
+| Binary File Handling | Read and write BMP and secret files |
 | Bitwise Operations | Extract and embed individual bits |
-| File Positioning | Use `fseek()`, `ftell()`, and `rewind()` |
-| Modular Programming | Separate implementation into `.c` and `.h` files |
-| Error Handling | Check argument validity, file opening, capacity, and operation status |
+| File Positioning | Navigate through file contents |
+| Modular Programming | Organize code into multiple source and header files |
+| Error Handling | Detect invalid arguments and file errors |
 
 ### Important C Library Functions
 
 - `fopen()` — Opens a file.
-- `fread()` — Reads data from a file.
-- `fwrite()` — Writes data to a file.
+- `fread()` — Reads binary data.
+- `fwrite()` — Writes binary data.
 - `fseek()` — Changes the file position.
 - `ftell()` — Returns the current file position.
-- `rewind()` — Moves the file position to the beginning.
+- `rewind()` — Resets the file position.
 - `fclose()` — Closes a file.
 - `strlen()` — Calculates a string's length.
+- `strcmp()` — Compares strings.
 - `strstr()` — Searches for a substring.
 - `strrchr()` — Finds the last occurrence of a character.
-- `strcmp()` — Compares strings.
-- `strcpy()` — Copies a string.
-- `printf()` — Displays information.
-- `perror()` — Displays an error message associated with the current system error.
+- `printf()` — Displays output.
+- `perror()` — Displays an error message associated with a system error.
 
 ## 💻 Prerequisites
 
-Before running the project, ensure you have:
+Before running the project, you need:
 
 - GCC or another compatible C compiler.
 - A terminal or command prompt.
-- A BMP image suitable for embedding data.
+- A compatible BMP image.
 - A secret file, such as a `.txt` file.
-- Sufficient image capacity for the secret file.
+- Sufficient image capacity for the secret file and metadata.
 
-The implementation assumes a BMP layout with a 54-byte header and calculates image capacity using three bytes per pixel. Use a compatible BMP image for testing.
+The implementation assumes a 54-byte BMP header and calculates image capacity using three bytes per pixel. Use a compatible BMP image for testing.
 
 ## ⚙️ Compilation
 
@@ -394,22 +379,20 @@ Open a terminal in the project directory and run:
 gcc main.c encode.c decode.c -o a.out
 ```
 
-This compiles the main program and both encoding and decoding modules into one executable.
-
 ### Windows with GCC
 
 ```bash
 gcc main.c encode.c decode.c -o steganography.exe
 ```
 
-If compilation succeeds, the executable will be created in the current directory.
+If compilation succeeds, the executable is created in the current directory.
 
 ## ▶️ Execution and Usage
 
 The program supports two primary operations:
 
-- `-e` — Encode a secret file into a BMP image.
-- `-d` — Decode a secret file from a stego image.
+- `-e` — Encode secret data into a BMP image.
+- `-d` — Decode secret data from a stego image.
 
 ### 1. Encoding
 
@@ -427,11 +410,11 @@ The program supports two primary operations:
 
 Here:
 
-- `beautiful.bmp` is the source BMP image.
+- `beautiful.bmp` is the original cover image.
 - `secret.txt` is the file to hide.
 - `stego_image.bmp` is the output image containing the hidden data.
 
-The output filename is optional. If it is omitted, the program uses `stego_image.bmp`.
+The output image filename is optional. If omitted, the program uses its default output filename, `stego_image.bmp`.
 
 **Example with the default output filename:**
 
@@ -455,14 +438,14 @@ The output filename is optional. If it is omitted, the program uses `stego_image
 
 Here:
 
-- `stego_image.bmp` is the previously encoded image.
+- `stego_image.bmp` is the image containing the embedded data.
 - `recovered_secret.txt` is the requested output filename for the recovered data.
 
-The output filename is optional according to the program's command-line usage. If omitted, the program uses its built-in default output naming behavior.
+The optional output filename and its default behavior depend on the implementation in `main.c` and `decode.c`.
 
 ### Windows Execution
 
-Compile the project:
+Compile:
 
 ```bash
 gcc main.c encode.c decode.c -o steganography.exe
@@ -480,13 +463,13 @@ Decode:
 steganography.exe -d stego_image.bmp recovered_secret.txt
 ```
 
-**Important:** Use the actual filenames available in your project directory. The source BMP image and secret file must exist before encoding.
+Replace the example filenames with the files available in your project directory.
 
 ## 🧪 Sample Input and Output
 
-The following examples are based on the sample execution documented with the project. The image dimensions and metadata are illustrative sample values, not guaranteed results for every image.
+The following examples illustrate the expected workflow. Exact output depends on the source image, secret file, and messages printed by your implementation.
 
-### Example 1: Encoding a Secret File
+### Example 1: Encoding
 
 **Command:**
 
@@ -494,7 +477,7 @@ The following examples are based on the sample execution documented with the pro
 ./a.out -e beautiful.bmp secret.txt stego_image.bmp
 ```
 
-**Sample output:**
+**Illustrative output:**
 
 ```text
 INFO: Operation type is Encode
@@ -504,9 +487,9 @@ height = 768
 INFO: Encoding successful
 ```
 
-This indicates that the operation was identified as encoding, the command-line arguments were accepted, the image dimensions were read, and the encoding function returned success.
+The program identifies the encoding operation, validates its arguments, checks the image capacity, and attempts to generate the stego image.
 
-### Example 2: Decoding the Hidden File
+### Example 2: Decoding
 
 **Command:**
 
@@ -514,7 +497,7 @@ This indicates that the operation was identified as encoding, the command-line a
 ./a.out -d stego_image.bmp recovered_secret.txt
 ```
 
-**Sample output:**
+**Illustrative output:**
 
 ```text
 INFO: Operation type is Decode
@@ -522,11 +505,11 @@ INFO: Arguments are valid for decoding
 INFO: Decoding successful
 ```
 
-The decoder attempts to verify the magic string and recover the stored file extension, file size, and file contents.
+The decoder verifies the magic string and attempts to extract the embedded secret file.
 
 ### Example 3: Recovered Secret File
 
-The following text is the sample secret content documented with the project:
+The following is an example of secret text that can be used for testing:
 
 ```text
 SARDAR: CODE RED
@@ -547,299 +530,250 @@ CODE RED ACTIVE.
 FINAL WARNING: YOU ARE BEING WATCHED.
 ```
 
-After successful decoding, compare the recovered file with the original secret file to verify that the content has been preserved.
+After decoding, compare the recovered file with the original to confirm that the data has been preserved.
+
+**Note:** The example text is illustrative. It should only be described as your actual test output if it matches the file you uploaded.
 
 ## 🧾 Function Documentation
 
-The project is divided into encoding, decoding, and shared operations.
+The functions below describe the project's expected module responsibilities. Verify exact function names against your source files before treating this section as a complete API reference.
 
 ### Main Program — `main.c`
 
 **`main()`**
 
 - Entry point of the application.
-- Checks whether command-line arguments are supplied.
-- Identifies the requested operation.
-- Validates encoding or decoding arguments.
-- Calls `do_encoding()` or `do_decoding()`.
-- Reports operation status and returns an appropriate exit status.
+- Processes command-line arguments.
+- Selects encoding or decoding.
+- Calls the corresponding operation.
+- Reports operation status.
 
 **`check_operation_type()`**
 
-- Checks the operation option.
-- Returns `e_encode` for `-e`.
-- Returns `e_decode` for `-d`.
-- Returns `e_unsupported` for an unsupported option.
+Identifies the requested operation from the command-line option, returning the corresponding operation type for encoding, decoding, or an unsupported option.
 
-### Encoding Functions — `encode.c`
+### Encoding Module — `encode.c`
 
 **`read_and_validate_encode_args()`**
 
-Validates the source BMP filename, secret filename, optional output image filename, and secret file extension. It stores the selected filenames in `EncodeInfo`.
-
----
+Validates encoding arguments and stores the relevant filenames.
 
 **`open_files()`**
 
-Opens the source image in binary read mode, the secret file in binary read mode, and the destination stego image in binary write mode.
-
----
+Opens the source BMP image, secret file, and destination image.
 
 **`get_image_size_for_bmp()`**
 
-Reads the BMP width and height from their expected header offsets and calculates image capacity using three bytes per pixel.
-
----
+Reads image dimensions from the BMP header and calculates the capacity using the implementation's supported image layout.
 
 **`get_file_size()`**
 
-Moves the secret file pointer to the end, obtains the file size using `ftell()`, and resets the pointer to the beginning.
-
----
+Determines the size of the secret file using file-positioning operations.
 
 **`check_capacity()`**
 
-Calculates the source image capacity and secret file size. It verifies whether the image can hold the magic string, extension length, extension, secret file size, and secret file data.
-
----
+Checks whether the image can hold the hidden metadata and secret file contents.
 
 **`copy_bmp_header()`**
 
-Copies the first 54 bytes of the source BMP image to the destination image.
-
----
+Copies the BMP header from the original image to the output image.
 
 **`encode_magic_string()`**
 
-Embeds the predefined magic string into the least significant bits of image bytes.
-
----
+Embeds the predefined magic string in the image bytes.
 
 **`encode_secret_file_extn_size()`**
 
-Embeds the length of the secret file extension using 32 image bytes.
-
----
+Embeds the length of the secret file extension.
 
 **`encode_secret_file_extn()`**
 
-Embeds the secret file extension into image bytes, processing one character at a time.
-
----
+Embeds the secret file extension.
 
 **`encode_secret_file_size()`**
 
-Embeds the secret file size into 32 image bytes.
-
----
+Embeds the original secret file size.
 
 **`encode_secret_file_data()`**
 
-Reads secret file bytes and embeds each byte into the LSBs of eight image bytes. It checks the results of the secret file read, image buffer read, and destination write operations.
-
----
+Reads the secret file and embeds its contents into the image.
 
 **`encode_byte_to_lsb()`**
 
-Extracts eight bits from a secret character and stores them in the least significant bits of eight image bytes.
-
----
+Embeds one byte into the least significant bits of image bytes.
 
 **`encode_size_to_lsb()`**
 
-Encodes a 32-bit integer into the least significant bits of 32 image bytes.
-
----
+Embeds an integer size value into image bytes.
 
 **`copy_remaining_img_data()`**
 
-Copies the remaining source image bytes to the destination image after the hidden information has been embedded.
-
----
+Copies the remaining source image data after the encoded payload.
 
 **`do_encoding()`**
 
-Coordinates the encoding process by opening files, checking capacity, copying the BMP header, embedding the required information, copying the remaining image data, and closing the files.
+Coordinates the encoding workflow.
 
-### Decoding Functions — `decode.c`
+### Decoding Module — `decode.c`
 
 **`read_and_validate_decode_args()`**
 
-Validates the decoding command-line arguments and stores the stego image filename and output filename in `DecodeInfo`.
-
----
+Validates the decoding arguments and stores the relevant filenames.
 
 **`open_decode_files()`**
 
-Opens the stego image and the output file needed for decoding.
-
----
+Opens the stego image and output file.
 
 **`check_magic_string()`**
 
-Extracts the magic string from the image and compares it with the expected value to check whether the image contains the expected hidden-data format.
-
----
+Extracts and verifies the expected magic string.
 
 **`decode_secret_file_extn_size()`**
 
-Extracts the stored extension length from the least significant bits of image bytes.
-
----
+Extracts the secret file extension length.
 
 **`decode_secret_file_extn()`**
 
-Recovers the secret file extension from the encoded image.
-
----
+Recovers the stored file extension.
 
 **`decode_secret_file_size()`**
 
-Extracts the original secret file size from the image.
-
----
+Recovers the original secret file size.
 
 **`decode_byte_from_lsb()`**
 
-Reads the least significant bits of eight image bytes and reconstructs one character.
-
----
+Reconstructs a byte from the least significant bits of image bytes.
 
 **`decode_size_from_lsb()`**
 
-Reconstructs an integer from the least significant bits of 32 image bytes.
-
----
+Reconstructs an integer from the embedded size bits.
 
 **`decode_secret_file_data()`**
 
-Extracts the hidden secret file bytes and writes them to the output file.
-
----
+Extracts the hidden file contents and writes them to the output file.
 
 **`do_decoding()`**
 
-Coordinates the decoding process by opening files, verifying the magic string, recovering the extension and file size, extracting the secret file data, and closing the files.
+Coordinates the decoding workflow.
 
-### Shared Types and Structures
+### Shared Definitions
 
 **`Status`**
 
-Represents operation results using `e_success` and `e_failure`.
+Represents the success or failure status of an operation.
 
 **`OperationType`**
 
-Represents the requested operation using `e_encode`, `e_decode`, and `e_unsupported`.
+Represents the selected encoding, decoding, or unsupported operation.
 
 **`EncodeInfo`**
 
-Stores encoding-related filenames, file pointers, image capacity, secret file extension, and secret file size.
+Stores encoding-related file information and operation state.
 
 **`DecodeInfo`**
 
-Stores decoding-related filenames, file pointers, recovered file extension, and secret file size.
+Stores decoding-related file information and operation state.
 
 **`MAGIC_STRING`**
 
-The predefined string `#*`, used by the encoder and decoder to identify the expected embedded-data format.
+The predefined identifier `#*` used to verify the expected hidden-data format.
 
 ## ⚠️ Error Handling
 
-The application checks several error conditions during execution.
+The implementation checks various conditions during encoding and decoding.
 
 | Condition | Expected behavior |
 |---|---|
-| Missing command-line arguments | Reports missing arguments |
-| Unsupported operation option | Reports an unsupported operation |
-| Invalid source image filename | Rejects invalid encoding arguments |
-| Secret filename without an extension | Rejects invalid secret file arguments |
-| Invalid output image extension | Rejects invalid encoding arguments |
+| Missing command-line arguments | Reports an argument or usage error |
+| Unsupported operation | Reports an unsupported operation |
+| Invalid filename or extension | Rejects invalid arguments |
 | Source image cannot be opened | Reports a file-opening error |
 | Secret file cannot be opened | Reports a file-opening error |
-| Destination image cannot be opened | Reports a file-opening error |
+| Destination file cannot be created | Reports a file-opening error |
 | Insufficient image capacity | Encoding fails |
-| Invalid or missing magic string | Decoding fails |
-| Secret metadata or data cannot be read | The corresponding operation may fail |
-| Successful encoding or decoding | Reports success |
+| Magic string mismatch | Decoding fails |
+| File read or write failure | The operation may fail |
+| Successful operation | Reports completion |
 
-The exact message depends on the failure point in the implementation. The project checks important file and argument conditions, but it is not a complete validator for every possible malformed BMP image.
+The exact message depends on the failure point in the source code. The project does not necessarily validate every possible malformed BMP file.
 
 ## 🧪 Testing Scenarios
 
-Use the following scenarios to evaluate the project:
-
-| Test | Input | Expected result |
+| Test Case | Input | Expected Result |
 |---|---|---|
-| Valid encoding | Compatible BMP and existing secret file | Stego image is generated |
-| Valid decoding | Correctly encoded image | Secret file is recovered |
-| Missing arguments | Incomplete command | Usage or argument error |
-| Invalid operation | Unsupported option | Unsupported operation message |
-| Missing source image | Nonexistent BMP filename | File-opening failure |
-| Missing secret file | Nonexistent secret filename | File-opening failure |
-| Insufficient capacity | Secret data too large for the image | Encoding failure |
-| Image without the expected magic string | Ordinary BMP image | Decoding should fail |
-| Incorrect output extension | Invalid stego image filename | Argument validation failure |
-| Content comparison | Original and recovered secret files | Contents should match after successful encoding and decoding |
+| Valid encoding | Compatible BMP and secret file | Stego image is generated |
+| Valid decoding | Encoded image | Secret file is recovered |
+| Missing arguments | Incomplete command | Argument validation fails |
+| Unsupported option | Invalid command-line option | Unsupported operation is reported |
+| Missing BMP image | Nonexistent filename | File-opening error |
+| Missing secret file | Nonexistent secret filename | File-opening error |
+| Insufficient capacity | Secret file too large | Encoding fails |
+| Invalid magic string | Ordinary or incompatible BMP | Decoding fails |
+| Content comparison | Original and recovered files | Contents match after successful recovery |
+
+## 🖼️ Sample Files and Demonstration
+
+The repository includes sample files to demonstrate the encoding and decoding workflow.
+
+- **`beautiful.bmp`** — Original BMP cover image used for encoding.
+- **`stego_image.bmp`** — Output BMP image containing the embedded secret data.
+- **`recovered_secret.txt`** — Sample recovered file generated during decoding.
+
+### Demonstration Workflow
+
+1. Select the original BMP image and secret file.
+2. Encode the secret file into the image.
+3. Generate the stego image.
+4. Decode the stego image.
+5. Recover the secret file.
+6. Compare the recovered file with the original file.
+
+This demonstrates the intended workflow of the application.
 
 ## ⚠️ Limitations
 
-This project is an educational implementation of BMP image steganography. Its current implementation has several limitations:
-
-- It assumes a 54-byte BMP header.
-- It calculates image capacity using three bytes per pixel.
-- It recognizes the predefined `#*` magic string.
-- It supports the specific secret file metadata and frame layout implemented in the source code.
-- The encoder and decoder rely on matching bit order and metadata layout.
-- The implementation does not encrypt the secret file.
-- LSB modifications may be detectable through steganalysis.
-- Resizing, recompressing, or otherwise modifying the stego image may corrupt the embedded data.
-- The code does not fully validate every BMP variant, malformed image, or unexpected file size.
-- The implementation should be tested with compatible BMP files and secret files within the supported capacity.
+- The implementation assumes a 54-byte BMP header.
+- Image capacity is calculated using three bytes per pixel.
+- The implementation recognizes the predefined magic string `#*`.
+- The decoder expects the metadata layout generated by the encoder.
+- The implementation does not encrypt the secret data.
+- LSB modifications can be detected by steganalysis.
+- Resizing, recompressing, or modifying the stego image may corrupt hidden data.
+- The code does not validate every possible BMP format or malformed image.
+- The implementation should be tested using compatible BMP images and secret files within the supported capacity.
 
 ## 📚 Learning Outcomes
 
-Developing this project helped me apply core C programming concepts to a practical file-processing application.
-
-### Technical Learning
+Developing this project provided practical experience with:
 
 - Understanding LSB-based steganography.
-- Working with BMP image headers and binary data.
-- Extracting and embedding individual bits.
-- Applying bitwise operators such as `&`, `|`, `~`, `>>`, and `<<`.
-- Using arrays and pointers to process byte buffers.
-- Managing file pointers and file positions.
-- Reading and writing binary files.
-- Handling command-line arguments.
-- Using structures and enumerations.
-- Organizing code into multiple source and header files.
-- Implementing encoding and decoding workflows.
-- Handling invalid arguments and file-opening errors.
-
-### Problem-Solving Skills
-
-- Calculating the storage capacity required for hidden information.
-- Designing a metadata layout that the decoder can interpret.
-- Preserving the original BMP header.
-- Separating encoding logic from decoding logic.
-- Tracking data sizes and file positions during binary processing.
-- Testing whether recovered data matches the original file.
+- Reading BMP headers and binary data.
+- Embedding and extracting individual bits.
+- Using bitwise operators such as `&`, `|`, `~`, `>>`, and `<<`.
+- Working with arrays, pointers, and structures.
+- Managing file pointers and binary file operations.
+- Processing command-line arguments.
+- Organizing code into multiple `.c` and `.h` files.
+- Calculating image storage capacity.
+- Designing encoding and decoding workflows.
+- Implementing basic validation and error handling.
+- Testing data recovery and file integrity.
 
 ## 🔮 Future Enhancements
 
-Possible future improvements include:
+Possible improvements include:
 
-- Support for additional BMP formats and pixel layouts.
-- Stronger validation of image dimensions and file boundaries.
-- More comprehensive error handling and cleanup.
-- Improved support for larger secret files.
-- Automated tests for encoding and decoding.
-- Verification that recovered file contents match the original.
-- Safer handling of interrupted writes and output-file failures.
-- Optional encryption of the secret file before embedding.
-- Support for additional secret file formats.
-- Improved documentation and command-line help.
+- Supporting additional BMP formats and pixel layouts.
+- Strengthening validation of image headers and file boundaries.
+- Improving error handling and resource cleanup.
+- Adding automated encoding and decoding tests.
+- Verifying recovered files against the originals.
+- Supporting more secret file formats.
+- Improving recovery when file writing fails.
+- Adding optional encryption before embedding.
+- Improving command-line help and documentation.
 
-These are proposed improvements and are not claims about the current implementation.
+These are possible future improvements, not claims about features already implemented.
 
 ## 👨‍💻 Author
 
@@ -847,14 +781,14 @@ These are proposed improvements and are not claims about the current implementat
 
 Electronics and Communication Engineering graduate interested in C Programming, Embedded Systems, Linux, and software development.
 
-This project is part of my hands-on programming journey, where I apply C concepts to practical problems involving binary data, file handling, and bitwise operations.
+This project is part of my hands-on programming journey, applying C concepts to a practical application involving binary data, file handling, and bitwise operations.
 
 ## 🔗 Connect With Me
 
 - **GitHub:** [uppalapati-Ajay](https://github.com/uppalapati-Ajay)
-- 
 - **LinkedIn:** [Connect with me on LinkedIn](www.linkedin.com/in/ajay-uppalapati-06865124b)
 
+Replace `YOUR_LINKEDIN_PROFILE_URL` with your actual LinkedIn profile URL before publishing.
 
 ---
 
