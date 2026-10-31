@@ -259,6 +259,8 @@ flowchart TD
 
 <p align="center"><img src="assets/decode-flow.svg" alt="Animated decoding pipeline" width="100%"></p>
 
+<p align="center"><img src="assets/scanner.svg" alt="Animated decoder scanning pixels and recovering text" width="100%"></p>
+
 
 The decoding process follows these steps:
 
@@ -342,6 +344,7 @@ Image-Steganography-in-C/
 │   ├── features.svg
 │   ├── encode-flow.svg
 │   ├── decode-flow.svg
+│   ├── scanner.svg
 │   ├── layout.svg
 │   ├── tech-stack.svg
 │   ├── terminal.svg
@@ -376,18 +379,19 @@ The tree above assumes the sample files are in the repository's root directory. 
 
 ## 🎨 Animated Assets
 
-Every graphic in this README lives in the [`assets/`](assets) folder as a hand-written **SVG** file animated with SMIL. There are no images to download and no JavaScript, so the animations play directly on GitHub. Keep the `assets` folder next to `README.md`, otherwise the graphics will not load.
+Every graphic in this README lives in the [`assets/`](assets) folder as a hand-written **SVG** file animated with SMIL. Every card also has a colour-cycling border, a moving shine and rising particles. There are no images to download and no JavaScript, so the animations play directly on GitHub. Keep the `assets` folder next to `README.md`, otherwise the graphics will not load.
 
 | Preview | File | What it shows | Used in |
 |---|---|---|---|
-| <img src="assets/banner.svg" width="260" alt="banner"> | `assets/banner.svg` | Animated hero: windmills, balloons, grass, typed title | Top of README |
+| <img src="assets/banner.svg" width="260" alt="banner"> | `assets/banner.svg` | Animated hero: aurora sky, shooting stars, bit rain, spinning windmills, opening padlock, shimmering title with changing subtitle | Top of README |
 | <img src="assets/stats.svg" width="260" alt="stats"> | `assets/stats.svg` | Rings that draw themselves: modes, files, header bytes | Under the quick start |
-| <img src="assets/divider.svg" width="260" alt="divider"> | `assets/divider.svg` | Scrolling stream of 0s and 1s | Between sections |
+| <img src="assets/divider.svg" width="260" alt="divider"> | `assets/divider.svg` | Two streams of 0s and 1s with glowing orbs sweeping along a neon line | Between sections |
 | <img src="assets/hide-and-seek.svg" width="260" alt="hide-and-seek"> | `assets/hide-and-seek.svg` | Secret bits flowing into pixels, stego image looks identical | About the Project |
 | <img src="assets/lsb-animation.svg" width="260" alt="lsb-animation"> | `assets/lsb-animation.svg` | The letter A written into 8 pixel bytes, flips highlighted | How LSB Works |
 | <img src="assets/features.svg" width="260" alt="features"> | `assets/features.svg` | Six feature cards that glow in turn | Project Features |
 | <img src="assets/encode-flow.svg" width="260" alt="encode-flow"> | `assets/encode-flow.svg` | Encoding steps lit one after another with a travelling pulse | Encoding Process |
 | <img src="assets/decode-flow.svg" width="260" alt="decode-flow"> | `assets/decode-flow.svg` | Decoding steps lit one after another | Decoding Process |
+| <img src="assets/scanner.svg" width="260" alt="scanner"> | `assets/scanner.svg` | A scan line sweeps the pixels and the secret text appears | Decoding Process |
 | <img src="assets/layout.svg" width="260" alt="layout"> | `assets/layout.svg` | Fields of the stego image with a scanning light | Hidden Data Structure |
 | <img src="assets/tech-stack.svg" width="260" alt="tech-stack"> | `assets/tech-stack.svg` | Floating skill chips | Technologies and Concepts |
 | <img src="assets/terminal.svg" width="260" alt="terminal"> | `assets/terminal.svg` | Terminal that types the encode, decode and diff commands | Sample Input and Output |
