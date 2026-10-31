@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Image Steganography in C</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap">
+<style>
+:root{--night:#0a1226;--deep:#111d3a;--sky:#4aa8ff;--grass:#9be15d;--amber:#ffb347;--fog:#d6e8f7;--mute:#8fa5c4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--night);color:var(--fog);font:17px/1.6 "Instrument Sans",system-ui,sans-serif}
+h1,h2{font-family:"Bricolage Grotesque",Georgia,sans-serif;line-height:1.05;margin:0}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+section{max-width:980px;margin:0 auto;padding:72px 22px}
+h2{font-size:clamp(28px,4.5vw,44px);margin-bottom:12px}
+p.lead{color:var(--mute);max-width:60ch;margin:0 0 32px}
+/* hero */
+.hero{position:relative;height:min(92vh,720px);min-height:520px;overflow:hidden;background:linear-gradient(#0a1226 0%,#16336b 55%,#3a8fd0 78%,#cfe9c2 79%)}
+.hero svg{position:absolute;inset:0;width:100%;height:100%}
+.hero .txt{position:absolute;left:0;right:0;top:15%;text-align:center;padding:0 22px}
+.hero h1{font-size:clamp(40px,9vw,104px);font-weight:800;letter-spacing:-.02em}
+.hero p{margin:14px auto 0;max-width:46ch;color:var(--fog)}
+.blade{transform-box:fill-box;transform-origin:center;animation:spin 14s linear infinite}
+.blade.b2{animation-duration:20s}
+.balloon{animation:drift 9s ease-in-out infinite alternate}
+.balloon.x{animation-duration:12s;animation-delay:-4s}
+.island{animation:drift 7s ease-in-out infinite alternate}
+.grass{animation:sway 5s ease-in-out infinite alternate}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes drift{from{transform:translateY(0)}to{transform:translateY(-16px)}}
+@keyframes sway{from{transform:translateX(-6px)}to{transform:translateX(6px)}}
+.star{animation:tw 3s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.2}to{opacity:1}}
+/* bit lab */
+.lab{background:var(--deep);border:1px solid #243a6b;border-radius:14px;padding:26px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.cell{flex:1 1 64px;min-width:64px;border-radius:8px;padding:10px 6px;text-align:center;background:#0d1730;border:1px solid #243a6b;transition:background .4s,border-color .4s}
+.cell b{display:block;font-weight:500;font-size:20px}
+.cell .bin{font-size:13px;color:var(--mute)}
+.cell .bin i{font-style:normal;padding:0 2px;border-radius:3px}
+.cell.hit{border-color:var(--amber);background:#2a2110}
+.cell.hit .bin i{background:var(--amber);color:#1a1200}
+.cell.same{border-color:#3b5f2c;background:#13230f}
+.cell.same .bin i{background:var(--grass);color:#0d1a05}
+label{font-size:15px;color:var(--mute)}
+input{font:500 28px "IBM Plex Mono",monospace;width:72px;text-align:center;background:#0d1730;color:var(--fog);border:1px solid var(--sky);border-radius:8px;padding:6px;margin:0 10px}
+input:focus-visible,button:focus-visible,.seg:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.tag{font-size:13px;color:var(--mute);margin-top:4px}
+/* layout bar */
+.bar{display:flex;gap:4px;margin:20px 0 14px;height:84px}
+.seg{border:0;border-radius:8px;color:#071022;font:500 14px "IBM Plex Mono",monospace;cursor:pointer;padding:0 6px;transition:transform .25s,filter .25s;min-width:0}
+.seg:hover,.seg[aria-pressed=true]{transform:translateY(-8px);filter:brightness(1.15)}
+.detail{min-height:78px;color:var(--fog);background:var(--deep);border-left:4px solid var(--sky);padding:14px 18px;border-radius:0 10px 10px 0}
+/* calc */
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:10px}
+.calc input{width:100%;margin:6px 0 0;font-size:20px}
+.meter{height:16px;background:#0d1730;border-radius:99px;overflow:hidden;margin:22px 0 8px}
+.meter div{height:100%;width:0;background:var(--grass);border-radius:99px;transition:width .6s,background .3s}
+.verdict{font-weight:500}
+/* terminal */
+.term{background:#050a16;border:1px solid #243a6b;border-radius:12px;padding:20px;min-height:250px;font:14px/1.7 "IBM Plex Mono",monospace;white-space:pre-wrap;overflow-x:auto}
+.term .ok{color:var(--grass)}.term .cmd{color:var(--amber)}
+button.go{margin-top:14px;background:var(--sky);color:#04122a;border:0;border-radius:8px;padding:10px 20px;font:500 16px "Instrument Sans",sans-serif;cursor:pointer}
+.tabs{display:flex;gap:8px;margin-bottom:18px}.tabs button{background:var(--deep);color:var(--fog);border:1px solid #243a6b;border-radius:99px;padding:8px 22px;font:500 16px "Instrument Sans",sans-serif;cursor:pointer}.tabs button[aria-pressed=true]{background:var(--sky);color:#04122a;border-color:var(--sky)}
+.flow{position:relative;margin:0;padding:0 0 0 34px;list-style:none}.flow:before{content:"";position:absolute;left:11px;top:8px;bottom:8px;width:3px;background:#243a6b;border-radius:3px}
+.flow li{position:relative;padding:9px 16px;margin:6px 0;border-radius:10px;background:var(--deep);border:1px solid #243a6b;opacity:.55;transition:all .4s}.flow li:before{content:"";position:absolute;left:-30px;top:50%;width:13px;height:13px;margin-top:-6px;border-radius:50%;background:#243a6b;transition:all .4s}
+.flow li.done{opacity:.9}.flow li.done:before{background:var(--grass)}.flow li.now{opacity:1;border-color:var(--amber);transform:translateX(10px);background:#2a2110}.flow li.now:before{background:var(--amber);box-shadow:0 0 0 6px rgba(255,179,71,.25)}
+.tests{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.t{background:var(--deep);border:1px solid #243a6b;border-radius:10px;padding:14px 16px}.t b{display:block;font-weight:500}.t span{color:var(--mute);font-size:15px}.t.good{border-left:4px solid var(--grass)}.t.bad{border-left:4px solid #ff6b5e}
+footer{text-align:center;color:var(--mute);padding:40px 22px 60px;font-size:14px}
+@media(max-width:640px){.bar{height:64px}.seg{font-size:11px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="hero">
+<svg viewBox="0 0 1000 700" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+ <g fill="#fff">
+  <circle class="star" cx="120" cy="60" r="2"/><circle class="star" cx="330" cy="130" r="1.5" style="animation-delay:-1s"/>
+  <circle class="star" cx="560" cy="40" r="2" style="animation-delay:-2s"/><circle class="star" cx="820" cy="90" r="1.5"/>
+  <circle class="star" cx="930" cy="210" r="2" style="animation-delay:-1.5s"/><circle class="star" cx="720" cy="170" r="1.5" style="animation-delay:-.5s"/>
+ </g>
+ <circle cx="60" cy="300" r="190" fill="#5b3a4e" opacity=".55"/>
+ <circle cx="230" cy="270" r="62" fill="#2a4a8a" opacity=".7"/>
+ <g class="island"><path d="M700 400 q130-70 270 0 q-30 60-70 80 q-20 40-60 40 q-40-20-70-70 q-50-10-70-50z" fill="#4b5a52"/>
+  <path d="M705 400 q130-70 262 0 q-120 22-262 0z" fill="#3f8a3a"/>
+  <path d="M850 350 l16-52 l16 52z" fill="#5a4a3a"/><g class="blade" style="transform-origin:866px 292px"><path d="M866 292 L826 276 M866 292 L906 308 M866 292 L850 252 M866 292 L882 332" stroke="#cdbfa7" stroke-width="4" stroke-linecap="round"/></g></g>
+ <g class="balloon"><ellipse cx="505" cy="250" rx="22" ry="28" fill="#c7692a"/><rect x="498" y="282" width="14" height="9" fill="#5a3a1a"/></g>
+ <g class="balloon x"><ellipse cx="575" cy="190" rx="22" ry="28" fill="#d9a33a"/><rect x="568" y="222" width="14" height="9" fill="#5a3a1a"/></g>
+ <path d="M60 560 l45-200 h40 l45 200z" fill="#2c3448"/>
+ <g class="blade b2" style="transform-origin:125px 340px"><path d="M125 340 L30 300 M125 340 L220 380 M125 340 L95 235 M125 340 L155 445" stroke="#9aa6bd" stroke-width="7" stroke-linecap="round"/></g>
+ <path d="M300 560 l22-110 h22 l22 110z" fill="#36405a"/>
+ <g class="blade" style="transform-origin:333px 440px"><path d="M333 440 L280 424 M333 440 L386 456 M333 440 L318 388 M333 440 L348 492" stroke="#9aa6bd" stroke-width="5" stroke-linecap="round"/></g>
+ <rect y="545" width="1000" height="160" fill="#3f8a2a"/>
+ <g class="grass" fill="#8ed44a" opacity=".7"><path d="M0 560 q60-40 120 0 t120 0 t120 0 t120 0 t120 0 t120 0 t120 0 t120 0 v140 h-960z"/></g>
+ <g class="grass" style="animation-delay:-2.5s" fill="#c3ee70" opacity=".35"><path d="M-20 600 q60-30 120 0 t120 0 t120 0 t120 0 t120 0 t120 0 t120 0 t120 0 v100 h-960z"/></g>
+</svg>
+<div class="txt"><h1>Hidden in plain sight</h1><p>A C program that tucks a secret file into the last bit of every pixel byte of a BMP image, then reads it back out.</p></div>
+</header>
+
+<section>
+<h2>Flip one bit, change nothing you can see</h2>
+<p class="lead">Each pixel byte stores one secret bit in its last position. Type a character and watch eight pixel bytes take on its 8 bits.</p>
+<div class="lab">
+ <label>Secret character <input id="ch" maxlength="1" value="#" aria-label="Secret character"></label>
+ <span class="mono" id="asc"></span>
+ <div class="tag">Original pixel bytes</div><div class="row" id="orig"></div>
+ <div class="tag">Pixel bytes after encoding. Amber cells changed by 1, green cells stayed the same.</div><div class="row" id="stego"></div>
+ <div class="verdict" id="lab-note"></div>
+</div>
+</section>
+
+<section>
+<h2>What the stego image holds</h2>
+<p class="lead">The decoder reads fields in a fixed order. Select a field to see what it stores and how many image bytes it uses.</p>
+<div class="bar" id="bar"></div>
+<div class="detail" id="detail" aria-live="polite">Select a field above.</div>
+</section>
+
+<section>
+<h2>Will your file fit?</h2>
+<p class="lead">Capacity is width × height × 3 bytes. The program accepts the file only if the image has more bytes than the file needs.</p>
+<div class="calc">
+ <label>Width (px)<input id="w" type="number" value="1024" min="1"></label>
+ <label>Height (px)<input id="h" type="number" value="768" min="1"></label>
+ <label>Secret file (bytes)<input id="fs" type="number" value="350" min="0"></label>
+ <label>Extension length<input id="el" type="number" value="4" min="1" max="4"></label>
+</div>
+<div class="meter"><div id="fill"></div></div>
+<div class="verdict" id="cap"></div>
+</section>
+
+<section>
+<h2>Run it</h2>
+<p class="lead">Encode with <code>-e</code>, decode with <code>-d</code>.</p>
+<div class="term" id="term" role="log"></div>
+<button class="go" id="replay">Replay</button>
+</section>
+
+<section>
+<h2>Follow the program step by step</h2>
+<p class="lead">Pick a mode and watch the steps run in the order the code calls them.</p>
+<div class="tabs"><button id="te" aria-pressed="true">Encode (-e)</button><button id="td" aria-pressed="false">Decode (-d)</button></div>
+<ol class="flow" id="flow"></ol>
+</section>
+
+<section>
+<h2>What happens when things go wrong</h2>
+<p class="lead">Test cases from the project, grouped by whether the program succeeds or stops.</p>
+<div class="tests" id="tests"></div>
+</section>
+
+<footer><b>Ajay Uppalapati</b><br>Electronics and Communication Engineering graduate · C, Embedded Systems, Linux<br><a href="https://github.com/uppalapati-Ajay" style="color:var(--sky)">github.com/uppalapati-Ajay</a><br><br>Image Steganography in C · BMP · LSB encoding</footer>
+
+<script>
+(function(){
+var cover=[142,87,203,56,119,230,74,181];
+function bin(n){return ("00000000"+n.toString(2)).slice(-8)}
+function cell(v,cls){return '<div class="cell '+(cls||'')+'"><b>'+v+'</b><span class="bin mono">'+bin(v).slice(0,7)+'<i>'+bin(v).slice(7)+'</i></span></div>'}
+var chEl=document.getElementById('ch');
+function lab(){
+ var c=chEl.value||'#',code=c.charCodeAt(0)&255,o='',s='',n=0;
+ for(var i=0;i<8;i++){var bit=(code>>(7-i))&1,nv=(cover[i]&~1)|bit,ch=nv!==cover[i];if(ch)n++;
+  o+=cell(cover[i]);s+=cell(nv,ch?'hit':'same');}
+ document.getElementById('orig').innerHTML=o;document.getElementById('stego').innerHTML=s;
+ document.getElementById('asc').textContent='ASCII '+code+' = '+bin(code);
+ document.getElementById('lab-note').textContent=n+' of 8 bytes changed, each by exactly 1.';
+}
+chEl.addEventListener('input',lab);chEl.addEventListener('focus',function(){chEl.select()});lab();
+
+var segs=[
+ ['BMP header','54 bytes','#8fa5c4',54,'Copied untouched so the file stays a valid BMP.'],
+ ['Magic','16 bytes','#ffb347',16,'The text #* encoded in 2 × 8 bytes. If the decoder cannot find it, the image holds no hidden file.'],
+ ['Ext size','32 bytes','#4aa8ff',32,'A 32-bit integer: the length of the file extension, for example 4 for .txt.'],
+ ['Extension','n × 8 bytes','#9be15d',40,'The original extension, so the recovered file gets the right type.'],
+ ['Size','32 bytes','#4aa8ff',32,'A 32-bit integer: how many data bytes to read back.'],
+ ['Secret data','size × 8 bytes','#ffb347',120,'Your file, one bit per pixel byte.'],
+ ['Rest of image','unchanged','#3b5075',70,'Every remaining byte is copied as it was.']
+];
+var bar=document.getElementById('bar'),det=document.getElementById('detail');
+segs.forEach(function(s,i){
+ var b=document.createElement('button');b.className='seg';b.style.background=s[2];b.style.flex=s[3]+' 1 0';
+ b.setAttribute('aria-pressed','false');b.innerHTML=s[0];b.title=s[1];
+ b.onclick=function(){[].forEach.call(bar.children,function(x){x.setAttribute('aria-pressed','false')});
+  b.setAttribute('aria-pressed','true');det.style.borderColor=s[2];det.innerHTML='<b>'+s[0]+'</b> uses '+s[1]+'. '+s[4]};
+ bar.appendChild(b);
+});
+
+function calc(){
+ var w=+document.getElementById('w').value||0,h=+document.getElementById('h').value||0,
+ fs=+document.getElementById('fs').value||0,el=+document.getElementById('el').value||0;
+ var cap=w*h*3,need=16+32+el*8+32+fs*8,ok=cap>need;
+ var f=document.getElementById('fill');f.style.width=Math.min(100,cap?need/cap*100:100)+'%';f.style.background=ok?'#9be15d':'#ff6b5e';
+ var max=Math.max(0,Math.ceil((cap-80-el*8)/8)-1);
+ document.getElementById('cap').textContent=(ok?'Fits. ':'Too big. ')+'Needs '+need.toLocaleString()+' of '+cap.toLocaleString()+' image bytes. Largest file for this image: '+max.toLocaleString()+' bytes.';
+}
+['w','h','fs','el'].forEach(function(id){document.getElementById(id).addEventListener('input',calc)});calc();
+
+var lines=[['cmd','$ ./a.out -e beautiful.bmp secret.txt stego_image.bmp'],['','INFO: Operation type is Encode'],['','INFO: Arguments are valid for encoding'],['','width = 1024'],['','height = 768'],['ok','INFO: Encoding successful'],['',''],['cmd','$ ./a.out -d stego_image.bmp recovered_secret.txt'],['','INFO: Operation type is Decode'],['','INFO: Arguments are valid for decoding'],['ok','INFO: Decoding successful'],['cmd','$ diff secret.txt recovered_secret.txt && echo Identical'],['ok','Identical']];
+var term=document.getElementById('term'),timers=[];
+function play(){
+ timers.forEach(clearTimeout);timers=[];term.innerHTML='';
+ var d=0;
+ lines.forEach(function(l){d+=l[0]==='cmd'?500:220;
+  timers.push(setTimeout(function(){var s=document.createElement('div');s.className=l[0];s.textContent=l[1];term.appendChild(s)},d));});
+}
+document.getElementById('replay').onclick=play;
+var F={e:['Validate the BMP and secret file names','Open image, secret and output files','Check image capacity','Copy the 54-byte BMP header','Encode magic string #*','Encode extension length and extension','Encode secret file size','Encode secret data bit by bit','Copy remaining pixels','Close files and report success'],d:['Validate stego image and output name','Open the stego image','Read and verify magic string #*','Decode extension length and extension','Decode secret file size','Create the output file','Rebuild each byte from 8 LSBs and write it','Close files and report success']};
+var mode='e',idx=0,flow=document.getElementById('flow'),te=document.getElementById('te'),td=document.getElementById('td');
+function draw(){flow.innerHTML=F[mode].map(function(s,i){return '<li class="'+(i<idx?'done':i===idx?'now':'')+'">'+s+'</li>'}).join('')}
+function setMode(m){mode=m;idx=0;te.setAttribute('aria-pressed',m==='e');td.setAttribute('aria-pressed',m==='d');draw()}
+te.onclick=function(){setMode('e')};td.onclick=function(){setMode('d')};draw();
+setInterval(function(){idx=(idx+1)%(F[mode].length+2);if(idx>F[mode].length)idx=0;draw()},1100);
+var T=[['Valid encoding','Stego image is generated',1],['Valid decoding','Secret file is recovered',1],['Content comparison','Original and recovered files match',1],['Missing arguments','Argument validation fails',0],['Unsupported option','Unsupported operation is reported',0],['Missing BMP image','File-opening error',0],['Missing secret file','File-opening error',0],['Secret file too large','Capacity check fails, encoding stops',0],['Ordinary BMP with no hidden data','Magic string mismatch, decoding fails',0]];
+document.getElementById('tests').innerHTML=T.map(function(t){return '<div class="t '+(t[2]?'good':'bad')+'"><b>'+t[0]+'</b><span>'+t[1]+'</span></div>'}).join('');
+var seen=false;new IntersectionObserver(function(e){if(e[0].isIntersecting&&!seen){seen=true;play()}},{threshold:.4}).observe(term);
+})();
+</script>
+</body>
+</html>
