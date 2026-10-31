@@ -1,6 +1,30 @@
-# 🔐 Image Steganography in C
+<div align="center">
 
-### Hide Secret Data Inside BMP Images Using Least Significant Bit (LSB) Encoding
+<img src="assets/banner.svg" alt="Image Steganography in C" width="100%">
+
+<br>
+
+![C](https://img.shields.io/badge/Language-C-4aa8ff?style=for-the-badge&logo=c&logoColor=white)
+![BMP](https://img.shields.io/badge/Format-BMP-9be15d?style=for-the-badge)
+![LSB](https://img.shields.io/badge/Technique-LSB-ffb347?style=for-the-badge)
+![CLI](https://img.shields.io/badge/App-Command--Line-8fa5c4?style=for-the-badge&logo=gnubash&logoColor=white)
+![Linux](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows-17387a?style=for-the-badge&logo=linux&logoColor=white)
+
+### Hide secret data inside BMP images using Least Significant Bit (LSB) encoding
+
+[**Quick Start**](#-compilation) &nbsp;•&nbsp; [**How It Works**](#-how-lsb-steganography-works) &nbsp;•&nbsp; [**Demo**](#-sample-files-and-demonstration) &nbsp;•&nbsp; [**Functions**](#-function-documentation)
+
+</div>
+
+<p align="center"><img src="assets/divider.svg" width="100%" alt=""></p>
+
+```bash
+gcc *.c -o a.out
+./a.out -e beautiful.bmp secret.txt stego_image.bmp      # hide
+./a.out -d stego_image.bmp recovered_secret.txt          # reveal
+```
+
+<p align="center"><img src="assets/stats.svg" alt="Project statistics" width="100%"></p>
 
 Image Steganography is a command-line application developed using the C programming language to hide secret file data inside BMP images and retrieve it when required.
 
@@ -8,7 +32,7 @@ The project implements **Least Significant Bit (LSB) steganography**, a techniqu
 
 This project demonstrates practical applications of C programming, binary file handling, bitwise operations, pointers, structures, command-line arguments, file management, and modular programming.
 
----
+<p align="center"><img src="assets/divider.svg" width="100%" alt=""></p>
 
 ## 📌 Table of Contents
 
@@ -21,6 +45,7 @@ This project demonstrates practical applications of C programming, binary file h
 - [Decoding Process](#-decoding-process)
 - [Hidden Data Structure](#-hidden-data-structure)
 - [Project Structure](#-project-structure)
+- [Animated Assets](#-animated-assets)
 - [Technologies and Concepts](#-technologies-and-concepts)
 - [Prerequisites](#-prerequisites)
 - [Compilation](#-compilation)
@@ -36,9 +61,12 @@ This project demonstrates practical applications of C programming, binary file h
 - [Author](#-author)
 - [Connect With Me](#-connect-with-me)
 
----
+<p align="center"><img src="assets/divider.svg" width="100%" alt=""></p>
 
 ## 🚀 About the Project
+
+<p align="center"><img src="assets/hide-and-seek.svg" alt="Animation of a secret file flowing into image pixels" width="100%"></p>
+
 
 Digital images contain pixel data that can be used to store additional information. This project uses the data in a BMP image to conceal a secret file.
 
@@ -111,6 +139,8 @@ The encoder processes each secret byte one bit at a time. Each bit is stored in 
 
 Therefore, **one secret byte requires eight image bytes** for the payload encoding.
 
+<p align="center"><img src="assets/lsb-animation.svg" alt="Animation of the letter A being written into the last bit of 8 pixel bytes" width="820"></p>
+
 ### Example: Encoding the Character `A`
 
 ```text
@@ -132,9 +162,13 @@ The process continues until the stored secret file size has been recovered.
 - Supports embedding binary file data.
 - Provides hands-on experience with image processing and file handling.
 
-**Security note:** LSB steganography is not encryption. The hidden data may be detectable, and modifying or recompressing the image may damage the embedded information.
+> [!WARNING]
+> **Security note:** LSB steganography is not encryption. The hidden data may be detectable, and modifying or recompressing the image may damage the embedded information.
 
 ## ✨ Project Features
+
+<p align="center"><img src="assets/features.svg" alt="Project feature cards" width="100%"></p>
+
 
 ### 1. Encode Secret Data
 
@@ -178,6 +212,9 @@ Allows the user to choose encoding or decoding using command-line arguments.
 
 ## 🔐 Encoding Process
 
+<p align="center"><img src="assets/encode-flow.svg" alt="Animated encoding pipeline" width="100%"></p>
+
+
 The encoding process follows these steps:
 
 1. Read the command-line arguments.
@@ -220,6 +257,9 @@ flowchart TD
 
 ## 🔓 Decoding Process
 
+<p align="center"><img src="assets/decode-flow.svg" alt="Animated decoding pipeline" width="100%"></p>
+
+
 The decoding process follows these steps:
 
 1. Read the command-line arguments.
@@ -254,6 +294,8 @@ flowchart TD
 ```
 
 ## 🧩 Hidden Data Structure
+
+<p align="center"><img src="assets/layout.svg" alt="Layout of the stego image" width="900"></p>
 
 The encoder stores the following information in the image data.
 
@@ -291,6 +333,19 @@ Image-Steganography-in-C/
 ├── decode.h
 ├── common.h
 ├── types.h
+├── assets/
+│   ├── banner.svg
+│   ├── stats.svg
+│   ├── divider.svg
+│   ├── hide-and-seek.svg
+│   ├── lsb-animation.svg
+│   ├── features.svg
+│   ├── encode-flow.svg
+│   ├── decode-flow.svg
+│   ├── layout.svg
+│   ├── tech-stack.svg
+│   ├── terminal.svg
+│   ├── footer.svg
 ├── README.md
 ├── .gitignore
 ├── beautiful.bmp
@@ -319,7 +374,29 @@ The tree above assumes the sample files are in the repository's root directory. 
 | `.gitignore` | Excludes configured generated files and local files from Git tracking |
 | `README.md` | Project documentation |
 
+## 🎨 Animated Assets
+
+Every graphic in this README lives in the [`assets/`](assets) folder as a hand-written **SVG** file animated with SMIL. There are no images to download and no JavaScript, so the animations play directly on GitHub. Keep the `assets` folder next to `README.md`, otherwise the graphics will not load.
+
+| Preview | File | What it shows | Used in |
+|---|---|---|---|
+| <img src="assets/banner.svg" width="260" alt="banner"> | `assets/banner.svg` | Animated hero: windmills, balloons, grass, typed title | Top of README |
+| <img src="assets/stats.svg" width="260" alt="stats"> | `assets/stats.svg` | Rings that draw themselves: modes, files, header bytes | Under the quick start |
+| <img src="assets/divider.svg" width="260" alt="divider"> | `assets/divider.svg` | Scrolling stream of 0s and 1s | Between sections |
+| <img src="assets/hide-and-seek.svg" width="260" alt="hide-and-seek"> | `assets/hide-and-seek.svg` | Secret bits flowing into pixels, stego image looks identical | About the Project |
+| <img src="assets/lsb-animation.svg" width="260" alt="lsb-animation"> | `assets/lsb-animation.svg` | The letter A written into 8 pixel bytes, flips highlighted | How LSB Works |
+| <img src="assets/features.svg" width="260" alt="features"> | `assets/features.svg` | Six feature cards that glow in turn | Project Features |
+| <img src="assets/encode-flow.svg" width="260" alt="encode-flow"> | `assets/encode-flow.svg` | Encoding steps lit one after another with a travelling pulse | Encoding Process |
+| <img src="assets/decode-flow.svg" width="260" alt="decode-flow"> | `assets/decode-flow.svg` | Decoding steps lit one after another | Decoding Process |
+| <img src="assets/layout.svg" width="260" alt="layout"> | `assets/layout.svg` | Fields of the stego image with a scanning light | Hidden Data Structure |
+| <img src="assets/tech-stack.svg" width="260" alt="tech-stack"> | `assets/tech-stack.svg` | Floating skill chips | Technologies and Concepts |
+| <img src="assets/terminal.svg" width="260" alt="terminal"> | `assets/terminal.svg` | Terminal that types the encode, decode and diff commands | Sample Input and Output |
+| <img src="assets/footer.svg" width="260" alt="footer"> | `assets/footer.svg` | Animated waves and thank-you line | End of README |
+
 ## 🛠️ Technologies and Concepts
+
+<p align="center"><img src="assets/tech-stack.svg" alt="Skills used" width="100%"></p>
+
 
 ### Programming Language
 
@@ -467,6 +544,9 @@ Replace the example filenames with the files available in your project directory
 
 ## 🧪 Sample Input and Output
 
+<p align="center"><img src="assets/terminal.svg" alt="Animated terminal session" width="100%"></p>
+
+
 The following examples illustrate the expected workflow. Exact output depends on the source image, secret file, and messages printed by your implementation.
 
 ### Example 1: Encoding
@@ -535,6 +615,9 @@ After decoding, compare the recovered file with the original to confirm that the
 **Note:** The example text is illustrative. It should only be described as your actual test output if it matches the file you uploaded.
 
 ## 🧾 Function Documentation
+
+<details>
+<summary><b>Click to expand all function documentation</b></summary>
 
 The functions below describe the project's expected module responsibilities. Verify exact function names against your source files before treating this section as a complete API reference.
 
@@ -678,6 +761,9 @@ Stores decoding-related file information and operation state.
 
 The predefined identifier `#*` used to verify the expected hidden-data format.
 
+
+</details>
+
 ## ⚠️ Error Handling
 
 The implementation checks various conditions during encoding and decoding.
@@ -712,6 +798,12 @@ The exact message depends on the failure point in the source code. The project d
 | Content comparison | Original and recovered files | Contents match after successful recovery |
 
 ## 🖼️ Sample Files and Demonstration
+
+<table align="center">
+<tr><th align="center">Original: <code>beautiful.bmp</code></th><th align="center">Stego: <code>stego_image.bmp</code></th></tr>
+<tr><td><img src="beautiful.bmp" width="400"></td><td><img src="stego_image.bmp" width="400"></td></tr>
+<tr><td colspan="2" align="center"><b>One of these hides a secret message. Can you tell which?</b></td></tr>
+</table>
 
 The repository includes sample files to demonstrate the encoding and decoding workflow.
 
@@ -785,11 +877,13 @@ This project is part of my hands-on programming journey, applying C concepts to 
 
 ## 🔗 Connect With Me
 
-- **GitHub:** [uppalapati-Ajay](https://github.com/uppalapati-Ajay)
-- **LinkedIn:** [Connect with me on LinkedIn](https://www.linkedin.com/in/ajay-uppalapati-06865124b)
+[![GitHub](https://img.shields.io/badge/GitHub-uppalapati--Ajay-181717?style=for-the-badge&logo=github)](https://github.com/uppalapati-Ajay)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Ajay%20Uppalapati-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/ajay-uppalapati-06865124b)
 
----
+<p align="center"><img src="assets/divider.svg" width="100%" alt=""></p>
 
 ⭐ If you find this project interesting, feel free to explore the source code and share your feedback.
 
 **Thank you for visiting my Image Steganography project!**
+
+<img src="assets/footer.svg" width="100%" alt="">
