@@ -786,9 +786,7 @@ This project is part of my hands-on programming journey, applying C concepts to 
 ## 🔗 Connect With Me
 
 - **GitHub:** [uppalapati-Ajay](https://github.com/uppalapati-Ajay)
-- **LinkedIn:** [Connect with me on LinkedIn](www.linkedin.com/in/ajay-uppalapati-06865124b)
-
-Replace `YOUR_LINKEDIN_PROFILE_URL` with your actual LinkedIn profile URL before publishing.
+- **LinkedIn:** [Connect with me on LinkedIn](https://www.linkedin.com/in/ajay-uppalapati-06865124b)
 
 ---
 
